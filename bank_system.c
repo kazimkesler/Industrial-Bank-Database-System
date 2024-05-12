@@ -14,13 +14,13 @@ typedef struct
 {
 	unsigned int lastid;
 	bool success;
-} Confing;
+} Config;
 
 bool open_file(FILE**, const char*, const char*);
 char file_check(const char*);
 bool check_files();
-bool save_last_id(Confing);
-Confing get_last_id();
+bool save_last_id(Config);
+Config get_last_id();
 unsigned int insert_customer(Account*);
 unsigned int delete_customer(unsigned int);
 unsigned int add_money(unsigned int, double);
@@ -65,7 +65,7 @@ bool check_files()
 				open_file(&fpt, "customers.dat", "wb");
 				fclose(fpt);
 			}
-			Confing cfg = { 0, true };
+			Config cfg = { 0, true };
 			if (!save_last_id(cfg))
 				return false;
 		}
@@ -74,7 +74,7 @@ bool check_files()
 	else
 		return false;
 }
-bool save_last_id(Confing cfg)
+bool save_last_id(Config cfg)
 {
 	FILE* fpt;
 	bool success = false;
@@ -86,10 +86,10 @@ bool save_last_id(Confing cfg)
 	}
 	return success;
 }
-Confing get_last_id()
+Config get_last_id()
 {
 	FILE* fpt;
-	Confing cfg = { 0, false };
+	Config cfg = { 0, false };
 	bool success = false;
 	if (open_file(&fpt, "confings.dat", "rb"))
 	{
@@ -102,7 +102,7 @@ Confing get_last_id()
 unsigned int insert_customer(Account* acc)
 {
 	bool state = false;
-	Confing cfg = get_last_id();
+	Config cfg = get_last_id();
 	if (cfg.success)
 		cfg.lastid++;
 	if (cfg.lastid)
@@ -134,7 +134,7 @@ unsigned int delete_customer(unsigned int id)
 	FILE* fpt;
 	bool state = false;
 	unsigned int deleted;
-	Confing cfg = get_last_id();
+	Config cfg = get_last_id();
 	if ((cfg.lastid -= !cfg.success) > 0 && id <= cfg.lastid)
 	{
 		if (open_file(&fpt, "customers.dat", "rb+"))
@@ -160,7 +160,7 @@ unsigned int add_money(unsigned int id, double amount)
 	FILE* fpt;
 	Account acc;
 	bool state = false;
-	Confing cfg = get_last_id();
+	Config cfg = get_last_id();
 	if ((cfg.lastid -= !cfg.success) > 0 && id <= cfg.lastid)
 	{
 		if (open_file(&fpt, "customers.dat", "rb+"))
@@ -185,7 +185,7 @@ Account* select_customer(unsigned int id)
 	FILE* fpt;
 	static Account acc;
 	bool state = false;
-	Confing cfg = get_last_id();
+	Config cfg = get_last_id();
 	if ((cfg.lastid -= !cfg.success) > 0 && id <= cfg.lastid)
 	{
 		if (open_file(&fpt, "customers.dat", "r"))
@@ -203,7 +203,7 @@ bool list_all(bool withdel)
 	FILE* fpt, * fpt_out;
 	bool state = false;
 	Account acc;
-	Confing cfg = get_last_id();
+	Config cfg = get_last_id();
 	if ((cfg.lastid -= !cfg.success) > 0)
 	{
 		if (open_file(&fpt, "customers.dat", "rb"))
